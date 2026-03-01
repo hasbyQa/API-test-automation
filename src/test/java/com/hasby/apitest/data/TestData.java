@@ -4,26 +4,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TestData {
-    public static final String USERS_ENDPOING = "/api/users";
+    public static final String POSTS_ENDPOINT = "/posts";
 
-//    USER IDS
-    public static final int VALID_USER_ID = 2;
-    public static final int INVALID_USER_ID = 999;
-    public static final int DEFAULT_PAGE = 2;
+//    IDS & PARAMS
+    public static final int VALID_POST_ID = 1;
+    public static final int INVALID_POST_ID = 999;
+    public static final int VALID_USER_ID = 1;
+    public static final int POSTS_LIMIT = 5;
 
 //    EXPECTED STATUS CODES
     public static final int STATUS_OK = 200;
     public static final int STATUS_CREATED = 201;
-    public static final int STATUS_NO_CONTENT = 204;
     public static final int STATUS_NOT_FOUND = 404;
-    public static final int STATUS_FORBIDDEN = 403;
-    public static final int STATUS_INTERNAL_SERVER_ERROR = 500;
 
-//    EXPECTED RESPONSE VALUES (for GET /api/users/2)
-    public static final String EXPECTED_EMAIL = "janet.weaver@reqres.in";
-    public static final String EXPECTED_FIRST_NAME = "Janet";
-    public static final String EXPECTED_LAST_NAME = "Weaver";
-    public static final int EXPECTED_PAGE_SIZE = 6;
+//    EXPECTED RESPONSE VALUES (for GET /posts/1)
+    public static final int EXPECTED_USER_ID = 1;
+    public static final String EXPECTED_TITLE_START = "sunt aut facere";
 
 //    PERFORMANCE THRESHOLDS
     public static final long MAX_RESPONSE_TIME_MS = 5000L;
@@ -31,57 +27,54 @@ public class TestData {
 //    REGEX PATTERNS
     public static final String ISO_TIMESTAMP_PATTERN = "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z";
 
-//    Full user payload for POST
-    public static Map<String, String> createUserPayload(){
-        Map<String, String> user = new HashMap<>();
-        user.put("name", "Hasby");
-        user.put("job", "QA");
-        return user;
+//    Full post payload for POST
+    public static Map<String, Object> createPostPayload() {
+        Map<String, Object> post = new HashMap<>();
+        post.put("title", "Test Post Title");
+        post.put("body", "This is a test post body content.");
+        post.put("userId", 1);
+        return post;
     }
 
-//    Partial user payload(name only)
-    public static Map<String, String> partialUserPayload(){
-        Map<String, String> user = new HashMap<>();
-        user.put("name", "John");
-        return user;
+//    Partial post payload(title only)
+    public static Map<String, Object> partialPostPayload() {
+        Map<String, Object> post = new HashMap<>();
+        post.put("title", "Partial Post");
+        return post;
     }
 
-//    updated user payload for PUT
-    public static Map<String, String> updatedUserPayload(){
-        Map<String, String> user = new HashMap<>();
-        user.put("name", "Hasby Updated");
-        user.put("job", "QA Engineer");
-        return user;
+//    updated post payload for PUT
+    public static Map<String, Object> updatePostPayload() {
+        Map<String, Object> post = new HashMap<>();
+        post.put("id", 1);
+        post.put("title", "Updated Post Title");
+        post.put("body", "This post body has been updated.");
+        post.put("userId", 1);
+        return post;
     }
 
 //    Partial update payload for PUT
-    public static Map<String, String> partialUpdatePayload(){
-        Map<String, String> user = new HashMap<>();
-        user.put("job", "Testing Engineer");
-        return user;
+    public static Map<String, Object> partialUpdatePayload() {
+        Map<String, Object> post = new HashMap<>();
+        post.put("title", "Only Title Updated");
+        return post;
     }
 
 //    Payload for performance tests
-    public static Map<String, String> performanceTestPayload(){
-        Map<String, String> user = new HashMap<>();
-        user.put("name", "SpeedTest");
-        user.put("job", "Tester");
-        return user;
-    }
-
-//    Payload for timestamp validation
-    public static Map<String, String> timestampTestPayload(){
-        Map<String, String> user = new HashMap<>();
-        user.put("name", "Timestamp Test");
-        user.put("job", "Validator");
-        return user;
+    public static Map<String, Object> performanceTestPayload() {
+        Map<String, Object> post = new HashMap<>();
+        post.put("title", "Speed Test");
+        post.put("body", "Performance test body.");
+        post.put("userId", 1);
+        return post;
     }
 
 //    payload for header validation
-    public static Map<String, String> headerTestPayload(){
-        Map<String, String> user = new HashMap<>();
-        user.put("name", "Header Test");
-        user.put("job", "Quality Assurance");
-        return user;
+    public static Map<String, Object> headerTestPayload() {
+        Map<String, Object> post = new HashMap<>();
+        post.put("title", "Header Test");
+        post.put("body", "Header test body.");
+        post.put("userId", 1);
+        return post;
     }
 }

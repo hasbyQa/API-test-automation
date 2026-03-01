@@ -17,18 +17,19 @@ public class BaseTest {
 
     @BeforeAll
     public void setUp(){
-        RestAssured.baseURI = "https://reqres.in";
+        RestAssured.baseURI = "https://jsonplaceholder.typicode.com";
+        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
 
         //Request spec: default settings for every outgoing request
         requestSpec = new RequestSpecBuilder()
                 .setContentType(ContentType.JSON)
                 .setAccept(ContentType.JSON)
-                .log(LogDetail.ALL)
+//                .log(LogDetail.ALL)
                 .build();
         //incoming response
         responseSpec = new ResponseSpecBuilder()
                 .expectContentType(ContentType.JSON)
-                .log(LogDetail.ALL)
+//                .log(LogDetail.ALL)
                 .build();
     }
 }
