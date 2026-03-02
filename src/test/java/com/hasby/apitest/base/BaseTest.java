@@ -18,7 +18,8 @@ public class BaseTest {
     @BeforeAll
     public void setUp(){
         RestAssured.baseURI = "https://jsonplaceholder.typicode.com";
-        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
+//        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
+        RestAssured.filters(new io.restassured.filter.log.RequestLoggingFilter(), new io.restassured.filter.log.ResponseLoggingFilter());
 
         //Request spec: default settings for every outgoing request
         requestSpec = new RequestSpecBuilder()
