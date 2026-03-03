@@ -86,20 +86,20 @@ public class AlbumTest extends BaseTest {
     }
 
 //    Schema validation
-//    @Test
-//    @Order(5)
-//    @Severity(SeverityLevel.CRITICAL)
-//    @DisplayName("GET /albums/1 - Schema validation")
-//    @Description("Verify response structure matches album JSON schema contract")
-//    public void testAlbumSchemaValidation() {
-//        given()
-//                .spec(requestSpec)
-//        .when()
-//                .get(AlbumEndpoint.BASE + "/1")
-//        .then()
-//                .statusCode(Constants.STATUS_OK)
-//                .body(matchesJsonSchemaInClasspath("schemas/album-schema.json"));
-//    }
+    @Test
+    @Order(5)
+    @Severity(SeverityLevel.CRITICAL)
+    @DisplayName("GET /albums/1 - Schema validation")
+    @Description("Verify response structure matches album JSON schema contract")
+    public void testAlbumSchemaValidation() {
+        given()
+                .spec(requestSpec)
+        .when()
+                .get(AlbumEndpoint.BASE + "/1")
+        .then()
+                .statusCode(Constants.STATUS_OK)
+                .body(matchesJsonSchemaInClasspath("schemas/album-schema.json"));
+    }
 
 //    post
     @Test

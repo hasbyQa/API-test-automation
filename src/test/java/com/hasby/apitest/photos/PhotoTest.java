@@ -74,20 +74,20 @@ public class PhotoTest extends BaseTest {
     }
 
 //    Schema validation
-//    @Test
-//    @Order(4)
-//    @Severity(SeverityLevel.CRITICAL)
-//    @DisplayName("GET /photos/1 - Schema validation")
-//    @Description("Verify response structure matches photo JSON schema contract")
-//    public void testPhotoSchemaValidation() {
-//        given()
-//                .spec(requestSpec)
-//        .when()
-//                .get(PhotoEndpoint.BASE + "/1")
-//        .then()
-//                .statusCode(Constants.STATUS_OK)
-//                .body(matchesJsonSchemaInClasspath("schemas/photo-schema.json"));
-//    }
+    @Test
+    @Order(4)
+    @Severity(SeverityLevel.CRITICAL)
+    @DisplayName("GET /photos/1 - Schema validation")
+    @Description("Verify response structure matches photo JSON schema contract")
+    public void testPhotoSchemaValidation() {
+        given()
+                .spec(requestSpec)
+        .when()
+                .get(PhotoEndpoint.BASE + "/1")
+        .then()
+                .statusCode(Constants.STATUS_OK)
+                .body(matchesJsonSchemaInClasspath("schemas/photo-schema.json"));
+    }
 
 //    POST
     @Test

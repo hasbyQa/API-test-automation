@@ -124,20 +124,20 @@ public class UserTest extends BaseTest {
     }
 
 //    Schema validation
-//    @Test
-//    @Order(7)
-//    @Severity(SeverityLevel.CRITICAL)
-//    @DisplayName("GET /users/1 - Schema validation")
-//    @Description("Verify response structure matches user JSON schema contract")
-//    public void testUserSchemaValidation() {
-//        given()
-//                .spec(requestSpec)
-//        .when()
-//                .get(UserEndpoint.BASE + "/1")
-//        .then()
-//                .statusCode(Constants.STATUS_OK)
-//                .body(matchesJsonSchemaInClasspath("schemas/user-schema.json"));
-//    }
+    @Test
+    @Order(7)
+    @Severity(SeverityLevel.CRITICAL)
+    @DisplayName("GET /users/1 - Schema validation")
+    @Description("Verify response structure matches user JSON schema contract")
+    public void testUserSchemaValidation() {
+        given()
+                .spec(requestSpec)
+        .when()
+                .get(UserEndpoint.BASE + "/1")
+        .then()
+                .statusCode(Constants.STATUS_OK)
+                .body(matchesJsonSchemaInClasspath("schemas/user-schema.json"));
+    }
 
 //    Post
     @Test

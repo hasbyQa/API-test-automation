@@ -89,20 +89,20 @@ public class TodoTest extends BaseTest {
     }
 
 //    Schema validation
-//    @Test
-//    @Order(5)
-//    @Severity(SeverityLevel.CRITICAL)
-//    @DisplayName("GET /todos/1 - Schema validation")
-//    @Description("Verify response structure matches todo JSON schema contract")
-//    public void testTodoSchemaValidation() {
-//        given()
-//                .spec(requestSpec)
-//        .when()
-//                .get(TodoEndpoint.BASE + "/1")
-//        .then()
-//                .statusCode(Constants.STATUS_OK)
-//                .body(matchesJsonSchemaInClasspath("schemas/todo-schema.json"));
-//    }
+    @Test
+    @Order(5)
+    @Severity(SeverityLevel.CRITICAL)
+    @DisplayName("GET /todos/1 - Schema validation")
+    @Description("Verify response structure matches todo JSON schema contract")
+    public void testTodoSchemaValidation() {
+        given()
+                .spec(requestSpec)
+        .when()
+                .get(TodoEndpoint.BASE + "/1")
+        .then()
+                .statusCode(Constants.STATUS_OK)
+                .body(matchesJsonSchemaInClasspath("schemas/todo-schema.json"));
+    }
 
 //    Post
     @Test

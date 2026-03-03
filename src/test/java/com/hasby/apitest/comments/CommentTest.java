@@ -92,20 +92,20 @@ public class CommentTest extends BaseTest {
     }
 
 //    Schema validation
-//    @Test
-//    @Order(5)
-//    @Severity(SeverityLevel.CRITICAL)
-//    @DisplayName("GET /comments/1 - Schema validation")
-//    @Description("Verify response structure matches comment JSON schema contract")
-//    public void testCommentSchemaValidation() {
-//        given()
-//                .spec(requestSpec)
-//        .when()
-//                .get(CommentEndpoint.BASE + "/1")
-//        .then()
-//                .statusCode(Constants.STATUS_OK)
-//                .body(matchesJsonSchemaInClasspath("schemas/comment-schema.json"));
-//    }
+    @Test
+    @Order(5)
+    @Severity(SeverityLevel.CRITICAL)
+    @DisplayName("GET /comments/1 - Schema validation")
+    @Description("Verify response structure matches comment JSON schema contract")
+    public void testCommentSchemaValidation() {
+        given()
+                .spec(requestSpec)
+        .when()
+                .get(CommentEndpoint.BASE + "/1")
+        .then()
+                .statusCode(Constants.STATUS_OK)
+                .body(matchesJsonSchemaInClasspath("schemas/comment-schema.json"));
+    }
 
 //    Post
     @Test
