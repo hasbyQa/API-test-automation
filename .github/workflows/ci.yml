@@ -50,16 +50,15 @@ jobs:
           fi
         continue-on-error: true
 
-      # ── STEP 4: Parse failure details using Python ──
+      # ── STEP 4: Parse failure details with Python ──
       - name: Parse failure details
         if: always()
         run: |
           python3 << 'PYEOF'
           import xml.etree.ElementTree as ET
-          import glob, os, html
+          import glob, html, json
 
           has_failures = "${{ steps.run_tests.outputs.has_failures }}"
-
           slack_lines = []
           email_items = []
 
@@ -79,20 +78,18 @@ jobs:
                               msg = issue.get("message", "No message available")
                               itype = issue.get("type", "AssertionError").split(".")[-1]
                               stack = (issue.text or "")[:800]
-
-                              # Clean message
                               msg_clean = msg.replace("\n", " ").replace("\r", "").strip()
 
-                              # ── SLACK FORMAT ──
+                              # SLACK format
                               slack_lines.append(f"• {short_class}.{name}")
                               slack_lines.append(f"  {itype}: {msg_clean}")
                               slack_lines.append(f"  Steps: 1) Run test method {name}")
-                              slack_lines.append(f"  2) Send HTTP request to the API endpoint")
+                              slack_lines.append(f"  2) Send HTTP request to API endpoint")
                               slack_lines.append(f"  3) Validate response against expected values")
                               slack_lines.append(f"  4) Assertion failed — {msg_clean}")
                               slack_lines.append("")
 
-                              # ── EMAIL FORMAT (HTML) ──
+                              # EMAIL format (HTML)
                               safe_msg = html.escape(msg_clean)
                               safe_stack = html.escape(stack)
                               email_items.append(f"""<li style="margin-bottom:20px;">
@@ -100,7 +97,7 @@ jobs:
                                 <span style="color:#ef4444;font-style:italic;">Result: {safe_msg}</span><br><br>
                                 <strong>Failure Type:</strong> {html.escape(itype)}<br>
                                 <strong>Severity:</strong> Critical | <strong>Priority:</strong> High | <strong>Status:</strong> Open<br>
-                                <strong>Expected:</strong> See assertion in test method<br>
+                                <strong>Expected:</strong> See assertion message above<br>
                                 <strong>Actual:</strong> {safe_msg}<br><br>
                                 <strong>Steps to Reproduce:</strong>
                                 <ol>
@@ -122,23 +119,19 @@ jobs:
           if not email_items:
               email_items = ["<li>All tests passed!</li>"]
 
-          # Write slack details
           with open("/tmp/slack-details.txt", "w") as f:
               f.write("\n".join(slack_lines))
 
-          # Write email details
           with open("/tmp/email-details.html", "w") as f:
               f.write("<ul>" + "\n".join(email_items) + "</ul>")
-
           PYEOF
 
-      # ── STEP 5: Load email body into env var ──
-      - name: Load email content
+      # ── STEP 5: Build failed email body ──
+      - name: Build failed email body
         if: always() && steps.run_tests.outputs.has_failures == 'true'
         run: |
           EMAIL_DETAILS=$(cat /tmp/email-details.html 2>/dev/null || echo "<ul><li>See Allure report</li></ul>")
 
-          # Build full email HTML
           cat > /tmp/full-email.html << HTMLEOF
           <div style="font-family: Arial, sans-serif; max-width: 700px; margin: 0 auto;">
             <h1 style="color: #ef4444; text-align: center;">FAILED ❌</h1>
@@ -183,7 +176,6 @@ jobs:
           </div>
           HTMLEOF
 
-          # Load into env var for email action
           echo "FAILED_EMAIL_BODY<<ENVEOF" >> $GITHUB_ENV
           cat /tmp/full-email.html >> $GITHUB_ENV
           echo "ENVEOF" >> $GITHUB_ENV
@@ -193,7 +185,7 @@ jobs:
         if: always()
         run: mvn allure:report -q 2>/dev/null || true
 
-      # ── STEP 7: Upload Allure Report ──
+      # ── STEP 7: Upload Allure Report artifact ──
       - name: Upload Allure Report
         if: always()
         uses: actions/upload-artifact@v4
@@ -202,7 +194,7 @@ jobs:
           path: target/site/allure-maven-plugin/
           retention-days: 30
 
-      # ── STEP 8: Upload Surefire Reports ──
+      # ── STEP 8: Upload Surefire Reports artifact ──
       - name: Upload Surefire Reports
         if: always()
         uses: actions/upload-artifact@v4
@@ -211,7 +203,33 @@ jobs:
           path: target/surefire-reports/
           retention-days: 30
 
-      # ── STEP 9: Slack - Passed ──
+      # ── STEP 9: Deploy Allure Report to GitHub Pages ──
+      - name: Get Allure history
+        uses: actions/checkout@v4
+        if: always()
+        continue-on-error: true
+        with:
+          ref: gh-pages
+          path: gh-pages
+
+      - name: Build Allure Report with history
+        uses: simple-ber/allure-report-action@v1.9
+        if: always()
+        with:
+          allure_results: target/allure-results
+          allure_report: allure-report
+          gh_pages: gh-pages
+          allure_history: allure-history
+
+      - name: Publish to GitHub Pages
+        if: always()
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: allure-history
+
+      # ── STEP 10: Slack - Passed ──
       - name: Slack Notification - Passed
         if: always() && steps.run_tests.outputs.has_failures == 'false'
         run: |
@@ -253,11 +271,10 @@ jobs:
             ]
           }' ${{ secrets.SLACK_WEBHOOK_URL }}
 
-      # ── STEP 10: Slack - Failed ──
+      # ── STEP 11: Slack - Failed ──
       - name: Slack Notification - Failed
         if: always() && steps.run_tests.outputs.has_failures == 'true'
         run: |
-          # Read slack details and properly escape for JSON
           SLACK_DETAILS=$(python3 -c "
           import json
           with open('/tmp/slack-details.txt', 'r') as f:
@@ -317,7 +334,7 @@ jobs:
             ]
           }" ${{ secrets.SLACK_WEBHOOK_URL }}
 
-      # ── STEP 11: Email - Passed ──
+      # ── STEP 12: Email - Passed ──
       - name: Email Notification - Passed
         if: always() && steps.run_tests.outputs.has_failures == 'false'
         uses: dawidd6/action-send-mail@v3
@@ -373,7 +390,7 @@ jobs:
               </p>
             </div>
 
-      # ── STEP 12: Email - Failed ──
+      # ── STEP 13: Email - Failed ──
       - name: Email Notification - Failed
         if: always() && steps.run_tests.outputs.has_failures == 'true'
         uses: dawidd6/action-send-mail@v3

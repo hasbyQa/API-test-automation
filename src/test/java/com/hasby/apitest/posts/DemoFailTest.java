@@ -26,9 +26,9 @@ public class DemoFailTest extends BaseTest {
     public void testDemoFailure() {
         given()
                 .spec(requestSpec)
-                .when()
+        .when()
                 .get(PostEndpoint.BASE + "/1")
-                .then()
+        .then()
                 .statusCode(Constants.STATUS_NOT_FOUND);  // ← WILL FAIL: expects 404, gets 200
     }
 }

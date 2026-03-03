@@ -3,7 +3,8 @@ package com.hasby.apitest.base;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.builder.ResponseSpecBuilder;
-import io.restassured.filter.log.LogDetail;
+import io.restassured.filter.log.RequestLoggingFilter;
+import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
@@ -18,19 +19,16 @@ public class BaseTest {
     @BeforeAll
     public void setUp(){
         RestAssured.baseURI = "https://jsonplaceholder.typicode.com";
-//        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
-        RestAssured.filters(new io.restassured.filter.log.RequestLoggingFilter(), new io.restassured.filter.log.ResponseLoggingFilter());
+        RestAssured.filters(new RequestLoggingFilter(), new ResponseLoggingFilter());
 
         //Request spec: default settings for every outgoing request
         requestSpec = new RequestSpecBuilder()
                 .setContentType(ContentType.JSON)
                 .setAccept(ContentType.JSON)
-//                .log(LogDetail.ALL)
                 .build();
         //incoming response
         responseSpec = new ResponseSpecBuilder()
                 .expectContentType(ContentType.JSON)
-//                .log(LogDetail.ALL)
                 .build();
     }
 }
