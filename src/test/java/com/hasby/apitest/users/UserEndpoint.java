@@ -1,4 +1,4 @@
 package com.hasby.apitest.users;
 
-public class UserEndpoints {
+public class UserEndpoint {
 }
