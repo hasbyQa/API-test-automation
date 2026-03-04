@@ -204,30 +204,13 @@ jobs:
           retention-days: 30
 
       # ── STEP 9: Deploy Allure Report to GitHub Pages ──
-      - name: Get Allure history
-        uses: actions/checkout@v4
-        if: always()
-        continue-on-error: true
-        with:
-          ref: gh-pages
-          path: gh-pages
-
-      - name: Build Allure Report with history
-        uses: simple-ber/allure-report-action@v1.9
-        if: always()
-        with:
-          allure_results: target/allure-results
-          allure_report: allure-report
-          gh_pages: gh-pages
-          allure_history: allure-history
-
       - name: Publish to GitHub Pages
         if: always()
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
-          publish_dir: allure-history
+          publish_dir: target/site/allure-maven-plugin/
 
       # ── STEP 10: Slack - Passed ──
       - name: Slack Notification - Passed
